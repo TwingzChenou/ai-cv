@@ -34,7 +34,7 @@ Le flux de données est conçu pour garantir pertinence et rapidité :
 2.  **API Gateway** : Express.js reçoit la requête, applique le rate-limiting et valide l'input.
 3.  **Agent Orchestration** : LangChain analyse l'intention.
 4.  **Retrieval (RAG)** : Si nécessaire, recherche sémantique dans **MongoDB Vector Search** pour trouver les expériences pertinentes.
-5.  **Generation** : **Gemini 1.5** synthétise les informations trouvées pour formuler une réponse professionnelle.
+5.  **Generation** : **Gemini 2.5 Flash** synthétise les informations trouvées pour formuler une réponse professionnelle.
 6.  **Response** : La réponse est renvoyée au frontend (format JSON optimisé).
 
 ## ⚙️ Installation & Configuration
