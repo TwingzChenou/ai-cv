@@ -14,7 +14,7 @@ async function getDb() {
     if (!client) {
         client = new MongoClient(process.env.MONGODB_URI);
         await client.connect();
-        console.log("🔌 Connected to MongoDB for Search Service");
+        // console.log("🔌 Connected to MongoDB for Search Service");
     }
     return client.db("sample_mflix");
 }

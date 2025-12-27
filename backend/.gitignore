@@ -1,0 +1,13 @@
+# Variables d'environnement
+.env
+.env.local
+.env.production
+
+# Dépendances
+node_modules/
+
+# Build
+dist/
+build/
+.vite/
+.DS_Store

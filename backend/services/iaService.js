@@ -4,6 +4,7 @@ const { AgentExecutor, createToolCallingAgent } = require("langchain/agents");
 const { ChatPromptTemplate, MessagesPlaceholder } = require("@langchain/core/prompts");
 const { DynamicTool } = require("@langchain/core/tools");
 const { unifiedSearch } = require("./searchService");
+const { getLatestActivity } = require("./githubService");
 const { HumanMessage, AIMessage } = require("@langchain/core/messages");
 
 // 1. Définition du modèle Chat (Gemini Pro)
@@ -21,7 +22,7 @@ const searchTool = new DynamicTool({
     description: "Recherche des informations spécifiques sur Quentin Forget (CV, parcours, projets, compétences). Utile quand l'utilisateur pose une question factuelle sur Quentin.",
     func: async (query) => {
         try {
-            console.log(`🔎 [Tool] Recherche pour : "${query}"`);
+            // console.log(`🔎 [Tool] Recherche pour : "${query}"`);
             const results = await unifiedSearch(query);
 
             if (!results || results.length === 0) {
@@ -40,16 +41,51 @@ const searchTool = new DynamicTool({
     },
 });
 
-const tools = [searchTool];
+const githubActivityTool = new DynamicTool({
+    name: "get_github_activity",
+    description: "À utiliser pour répondre aux questions sur l'activité récente de Quentin, ses derniers commits, ou les langages de programmation qu'il utilise réellement sur ses dépôts GitHub. Ne nécessite pas d'argument.",
+    func: async () => {
+        try {
+            // console.log(`🔎 [Tool] Recherche Activité GitHub`);
+            return await getLatestActivity();
+        } catch (error) {
+            console.error("❌ Erreur outil GitHub:", error);
+            return "Erreur lors de la récupération de l'activité.";
+        }
+    },
+});
+
+const tools = [searchTool, githubActivityTool];
 
 // 3. Prompt Template
+const improvedSystemPrompt = `
+IDENTITY & ROLE :
+Tu es l'assistant virtuel officiel de Quentin Forget. Ton objectif est d'agir comme un premier point de contact intelligent pour les recruteurs et les visiteurs techniques. Tu dois mettre en valeur le profil de Quentin (Développeur / Data) tout en restant factuel et transparent.
+
+DIRECTIVES D'UTILISATION DES OUTILS :
+1. **Activité Récente & Code (GitHub)** :
+   - DÈS qu'une question porte sur "ce qu'il fait en ce moment", "ses derniers projets", "son code" ou "sa veille techno", tu DOIS utiliser l'outil 'get_github_activity'.
+   - Analyse les messages de commit pour déduire sur quoi il travaille (ex: "Il travaille sur du Refactoring React" ou "Il configure du Backend Node.js").
+
+2. **Parcours & Compétences (Base de connaissances)** :
+   - Pour toute question sur les études, les expériences passées (Crédit Agricole, etc.) ou la stack technique générale, utilise 'search_quentin_info'.
+   - Ne réponds jamais de mémoire sur des dates ou des noms d'entreprises, vérifie toujours via l'outil.
+
+FORMATAGE & STYLE :
+- **Langue** : Français professionnel et fluide.
+- **Mise en forme** : Utilise le Markdown généreusement.
+  - Mets les technologies clés en **gras** (ex: **React**, **MongoDB**, **Python**).
+  - Utilise des listes à puces pour énumérer les tâches ou compétences.
+- **Concision** : Sois direct. Évite les phrases de remplissage inutiles comme "D'après mes informations...". Commence directement par la réponse.
+
+GESTION DES IMPRÉVUS :
+- Si les outils ne renvoient aucune info pertinente : redirige vers un sujet connu (compétences globales).
+- N'invente JAMAIS une expérience ou un diplôme.
+`;
+
+// Intégration dans ton code existant
 const prompt = ChatPromptTemplate.fromMessages([
-    ["system", `Tu es l'assistant virtuel de Quentin Forget.
-Ton but est de répondre aux recruteurs et visiteurs sur son parcours, ses compétences et ses projets.
-RÈGLES :
-- Utilise l'outil 'search_quentin_info' pour les questions sur Quentin.
-- Ne pas inventer d'informations.
-- Sois professionnel et sympathique.`],
+    ["system", improvedSystemPrompt],
     new MessagesPlaceholder("chat_history"),
     ["human", "{input}"],
     new MessagesPlaceholder("agent_scratchpad"),
@@ -95,7 +131,7 @@ async function askAgent(userMessage, history = []) {
             msg.role === 'user' ? new HumanMessage(msg.content) : new AIMessage(msg.content)
         );
 
-        console.log(`🤖 [Agent] Début traitement : "${userMessage}"`);
+        // console.log(`🤖 [Agent] Début traitement : "${userMessage}"`);
 
         const result = await executor.invoke({
             input: userMessage,

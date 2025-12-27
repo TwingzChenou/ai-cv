@@ -55,13 +55,19 @@ cd project-cv-ia
 
 ### 2. Configuration (`.env`)
 
-Créez un fichier `.env` dans le dossier `backend/` :
+Copiez le fichier d'exemple et remplissez vos clés :
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Editez ensuite `backend/.env` :
 
 ```env
 PORT=3000
 MONGODB_URI=votre_mongodb_atlas_uri
 GEMINI_API_KEY=votre_cle_gemini
-GITHUB_TOKEN=votre_token_github (facultatif)
+GITHUB_TOKEN=votre_token_github (facultatif, pour l'outil d'activité)
 NODE_ENV=development
 ```
 
