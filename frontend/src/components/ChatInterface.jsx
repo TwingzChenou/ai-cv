@@ -6,7 +6,7 @@ const ChatInterface = () => {
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
-            content: "👋 Bonjour ! Je suis l'assistant virtuel de Quentin. Posez-moi des questions sur son parcours, ses compétences techniques, ou ses projets !"
+            content: "👋 Bonjour ! Je suis Quentin. Posez-moi des questions sur mon parcours, mes compétences techniques, ou mes projets !"
         }
     ]);
     const [input, setInput] = useState('');
