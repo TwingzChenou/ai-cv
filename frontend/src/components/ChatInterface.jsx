@@ -22,6 +22,22 @@ const ChatInterface = () => {
         scrollToBottom();
     }, [messages, isLoading]);
 
+    // Wake up service (Ping Render)
+    useEffect(() => {
+        const pingBackend = async () => {
+            try {
+                const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/+$/, '');
+                if (!baseUrl) console.error("VITE_API_URL is missing!");
+
+                await fetch(`${baseUrl}/api/status`);
+                console.log('Backend woken up!');
+            } catch (err) {
+                console.log('Wake up ping failed', err);
+            }
+        };
+        pingBackend();
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
@@ -38,7 +54,16 @@ const ChatInterface = () => {
         setMessages(prev => [...prev, { role: 'assistant', content: '...' }]);
 
         try {
-            const response = await fetch('http://localhost:3000/api/ia/chat', {
+            const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/+$/, '');
+            if (!baseUrl) {
+                console.error("❌ VITE_API_URL n'est pas définie !");
+                throw new Error("Configuration erreur: API URL manquante");
+            }
+
+            const apiUrl = `${baseUrl}/api/ia/chat`;
+            console.log('📡 Appel API vers :', apiUrl);
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
