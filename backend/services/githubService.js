@@ -57,10 +57,23 @@ async function getLatestActivity() {
 
         output += `🚀 **Derniers Commits** :\n`;
         if (recentCommits.length === 0) {
-            output += "Aucun commit public récent trouvé.\n";
+            output += "Aucun commit public récent trouvé.\n\n";
         } else {
             recentCommits.forEach(c => {
                 output += `- [${c.date}] **${c.repo}** : "${c.message}"\n`;
+            });
+            output += "\n";
+        }
+
+        // Ajout explicite des projets récents
+        output += `📂 **Projets Récents (Repositories)** :\n`;
+        if (repos.length === 0) {
+            output += "Aucun dépôt public trouvé.\n";
+        } else {
+            repos.forEach(repo => {
+                const description = repo.description ? repo.description : "Pas de description";
+                output += `- **${repo.name}** (${repo.language || 'N/A'}) : ${description}\n`;
+                output += `  🔗 [Voir le code](${repo.html_url})\n`;
             });
         }
 
