@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 const ChatWidget = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { role: 'assistant', content: 'Bonjour ! Je suis l\'assistant virtuel de ce CV. Posez-moi des questions sur mon parcours, mes compétences ou mes projets !' }
+        { role: 'assistant', content: 'Bonjour ! Je suis Quentin. Posez-moi des questions sur mon parcours, mes compétences ou mes projets !' }
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
