@@ -3,12 +3,7 @@ import { Send, Loader2, User, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 const ChatInterface = () => {
-    const [messages, setMessages] = useState([
-        {
-            role: 'assistant',
-            content: "👋 Bonjour ! Je suis Quentin. Posez-moi des questions sur mon parcours, mes compétences techniques, ou mes projets !"
-        }
-    ]);
+    const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
@@ -104,7 +99,7 @@ const ChatInterface = () => {
         }
     };
 
-    const isInitialState = messages.length <= 1;
+    const isInitialState = messages.length === 0;
 
     return (
         <div className="w-full lg:w-[60%] lg:ml-[40%] min-h-screen flex flex-col bg-zinc-950 relative animate-slide-in-right">
