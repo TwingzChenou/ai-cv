@@ -155,7 +155,7 @@ const ChatInterface = () => {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Quelle est ton expérience avec React ?"
+                                placeholder="Poser moi une question, je me ferais un plaisir d'y répondre"
                                 className="relative w-full px-6 py-4 bg-zinc-900 border border-white/10 rounded-2xl text-white placeholder-zinc-500 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/20 transition-all shadow-xl"
                                 disabled={isLoading}
                             />
