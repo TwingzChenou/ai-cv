@@ -80,8 +80,7 @@ const ChatWidget = () => {
                     </div>
 
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 bg-zinc-50/50 dark:bg-zinc-900/50">
-                        <div className="flex-1" />
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-50/50 dark:bg-zinc-900/50">
                         {messages.map((msg, index) => (
                             <div
                                 key={index}

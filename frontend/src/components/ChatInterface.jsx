@@ -104,12 +104,18 @@ const ChatInterface = () => {
         }
     };
 
+    const isInitialState = messages.length <= 1;
+
     return (
         <div className="w-full lg:w-[60%] lg:ml-[40%] min-h-screen flex flex-col bg-zinc-950 relative animate-slide-in-right">
             <div className="absolute inset-0 bg-gradient-radial from-emerald-950/20 via-zinc-950 to-zinc-950 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col h-screen overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 custom-scrollbar">
+                {/* Messages Area */}
+                <div
+                    className={`flex-1 overflow-y-auto p-6 lg:p-8 space-y-6 custom-scrollbar transition-opacity duration-700 ease-in-out ${isInitialState ? 'opacity-0 invisible' : 'opacity-100 visible'
+                        }`}
+                >
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex gap-4 animate-fade-in ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-blue-600' : 'bg-emerald-600'}`}>
@@ -123,20 +129,43 @@ const ChatInterface = () => {
                     <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input Area */}
-                <div className="glass-strong-t border-t border-white/10 p-4 lg:p-8 bg-zinc-950/50">
-                    <form onSubmit={handleSubmit} className="flex gap-3 relative">
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            placeholder="Posez une question..."
-                            className="flex-1 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50"
-                            disabled={isLoading}
-                        />
-                        <button type="submit" disabled={!input.trim() || isLoading} className="px-6 py-4 bg-emerald-600 rounded-2xl text-white font-bold hover:bg-emerald-500 transition-all">
-                            {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
+                {/* Input Area Container */}
+                <div
+                    className={`absolute left-0 right-0 px-4 lg:px-8 transition-all duration-700 ease-in-out ${isInitialState
+                        ? 'top-1/2 -translate-y-1/2'
+                        : 'bottom-0 translate-y-0 bg-zinc-950/50 glass-strong-t border-t border-white/10 py-4 lg:py-8'
+                        }`}
+                >
+                    {/* Welcome Text in Initial State */}
+                    <div
+                        className={`text-center mb-8 transition-all duration-500 delay-100 ${isInitialState ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-4 hidden'
+                            }`}
+                    >
+                        <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
+                            Bonjour, je suis <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Quentin</span>
+                        </h1>
+                        <p className="text-zinc-400 text-lg">Posez-moi une question sur mon parcours ou mes projets.</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className={`flex gap-3 relative max-w-3xl mx-auto w-full transition-all duration-500 ${isInitialState ? 'scale-110' : 'scale-100'}`}>
+                        <div className="relative flex-1 group">
+                            <div className={`absolute -inset-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 ${inputRef.current === document.activeElement ? 'opacity-75' : ''}`}></div>
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="Quelle est ton expérience avec React ?"
+                                className="relative w-full px-6 py-4 bg-zinc-900 border border-white/10 rounded-2xl text-white placeholder-zinc-500 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/20 transition-all shadow-xl"
+                                disabled={isLoading}
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={!input.trim() || isLoading}
+                            className={`px-6 py-4 bg-emerald-600 rounded-2xl text-white font-bold hover:bg-emerald-500 transition-all shadow-lg hover:shadow-emerald-500/25 ${isInitialState ? 'aspect-square' : ''}`}
+                        >
+                            {isLoading ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />}
                         </button>
                     </form>
                 </div>
